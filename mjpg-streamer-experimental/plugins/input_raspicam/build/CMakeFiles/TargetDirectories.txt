@@ -1,0 +1,1 @@
+/home/stephen/mjpg-streamer/mjpg-streamer-experimental/plugins/input_raspicam/build/CMakeFiles/input_raspicam.dir

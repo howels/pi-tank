@@ -1,0 +1,110 @@
+<!--Add two buttons a user can click-->
+<button type="button" id="forward">Forward</button>
+<button type="button" id="reverse">Reverse</button>
+<button type="button" id="turn-left">Turn Left</button>
+<button type="button" id="turn-right">Turn Right</button>
+<button type="button" id="stop">Stop</button>
+
+<!--Using JQuery for button events-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery-ui.min.js"><\/script>')
+</script>
+
+
+<!--    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+-->
+<!--Socket.io library-->
+<script src="/socket.io/socket.io.js"></script>
+<script type=text/javascript>
+  $(document).ready(function() {
+    // Connect to the node.js server. Change the IP address to the actual node server location.
+    var socket = io.connect('http://tank.local:3000');
+    // When I've received 'robot connected' message from the socket.io server...
+    socket.on('robot connected', function (data) {
+      console.log(data);
+      // Send out a message to the server
+      socket.emit('robot command', { command: 'nothing' });
+    });
+
+    // When the html buttons are clicked...
+    $('#forward').click(function() {
+      socket.emit('robot command', { command: 'forward' });
+    });
+    $('#reverse').click(function() {
+      socket.emit('robot command', { command: 'reverse' });
+    });
+    $('#turn-left').click(function() {
+      socket.emit('robot command', { command: 'turn-left' });
+    });
+    $('#turn-right').click(function() {
+      socket.emit('robot command', { command: 'turn-right' });
+    });
+    $('#stop').click(function() {
+      socket.emit('robot command', { command: 'stop' });
+    });
+
+    wIsDown = false,
+    aIsDown = false,
+    sIsDown = false,
+    dIsDown = false;
+
+    $(document).keydown(function(e){
+     switch(e.which){
+      case 87:
+        if(wIsDown) return;
+        wIsDown = true;
+        socket.emit('robot command', { command: 'forward' });
+        break;
+      case 65:
+        if(aIsDown) return;
+        aIsDown = true;
+        socket.emit('robot command', { command: 'turn-left' });
+       socket.emit('keydown', 'left');
+        break;
+      case 83:
+        if(sIsDown) return;
+        sIsDown = true;
+        socket.emit('robot command', { command: 'reverse' });
+        break;
+      case 68:
+        if(dIsDown) return;
+        dIsDown = true;
+        socket.emit('robot command', { command: 'turn-right' });
+        break;
+     }
+    });
+
+    $(document).keyup(function(e){
+    switch(e.which){
+      case 87:
+        if(!wIsDown) return;
+        wIsDown = false;
+        socket.emit('robot command', { command: 'stop' });
+        break;
+      case 65:
+        if(!aIsDown) return;
+        aIsDown = false;
+        socket.emit('robot command', { command: 'stop' });
+        break;
+      case 83:
+        if(!sIsDown) return;
+        sIsDown = false;
+        socket.emit('robot command', { command: 'stop' });
+        break;
+      case 68:
+        if(!dIsDown) return;
+        dIsDown = false;
+        socket.emit('robot command', { command: 'stop' });
+        break;
+    }
+   });
+
+  });
+</script>
