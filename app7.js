@@ -100,7 +100,7 @@ tank.moveBackward = function(){
 tank.turnLeft = function(){
  console.log("Turn left function");
  async.parallel([function(callback) { board.analogWrite(_leftMotorFront, 0) },                                    
-   function(callback) { board.analogWrite(_leftMotorBack, 0) },
+   function(callback) { board.analogWrite(_leftMotorBack, _speed) },
    function(callback) { board.analogWrite(_rightMotorFront, _speed) },
    function(callback) { board.analogWrite(_rightMotorBack, 0) }],
    function(err, results) {
@@ -114,7 +114,7 @@ tank.turnRight = function(){
  async.parallel([function(callback) { board.analogWrite(_leftMotorFront, _speed) },                                    
    function(callback) { board.analogWrite(_leftMotorBack, 0) },
    function(callback) { board.analogWrite(_rightMotorFront, 0) },
-   function(callback) { board.analogWrite(_rightMotorBack, 0) }],
+   function(callback) { board.analogWrite(_rightMotorBack, _speed) }],
    function(err, results) {
      res.end();
    }
