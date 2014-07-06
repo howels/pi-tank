@@ -1,0 +1,156 @@
+<!--Add buttons a user can click-->
+<button type="button" id="forward">Forward</button>
+<button type="button" id="reverse">Reverse</button>
+<button type="button" id="turn-left">Turn Left</button>
+<button type="button" id="turn-right">Turn Right</button>
+<button type="button" id="stop">Stop</button>
+
+<script type="text/javascript">
+
+/* Copyright (C) 2007 Richard Atterer, richardÂ©atterer.net
+   This program is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License, version 2. See the file
+   COPYING for details. */
+
+var imageNr = 0; // Serial number of current image
+var finished = new Array(); // References to img objects which have finished downloading
+var paused = false;
+
+function createImageLayer() {
+  var img = new Image();
+  img.style.position = "absolute";
+  img.style.zIndex = -1;
+  img.onload = imageOnload;
+  img.onclick = imageOnclick;
+  img.src = "http://tank.local:8080/?action=snapshot&n=" + (++imageNr);
+  var webcam = document.getElementById("webcam");
+  webcam.insertBefore(img, webcam.firstChild);
+}
+
+// Two layers are always present (except at the very beginning), to avoid flicker
+function imageOnload() {
+  this.style.zIndex = imageNr; // Image finished, bring to front!
+  while (1 < finished.length) {
+    var del = finished.shift(); // Delete old image(s) from document
+    del.parentNode.removeChild(del);
+  }
+  finished.push(this);
+  if (!paused) createImageLayer();
+}
+
+function imageOnclick() { // Clicking on the image will pause the stream
+  paused = !paused;
+  if (!paused) createImageLayer();
+}
+
+</script>
+<body onload="createImageLayer();">
+
+<div id="webcam"><noscript><img src="http://tank.local:8080/?action=snapshot" /></noscript></div>
+
+
+</body>
+
+<!--Using JQuery for button events-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery-ui.min.js"><\/script>')
+</script>
+
+
+<!--    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+-->
+<!--Socket.io library-->
+<script src="/socket.io/socket.io.js"></script>
+<script type=text/javascript>
+  $(document).ready(function() {
+    // Connect to the node.js server. Change the IP address to the actual node server location.
+    var socket = io.connect('http://tank.local:3000');
+    // When I've received 'robot connected' message from the socket.io server...
+    socket.on('robot connected', function (data) {
+      console.log(data);
+      // Send out a message to the server
+      socket.emit('robot command', { command: 'nothing' });
+    });
+
+    // When the html buttons are clicked...
+    $('#forward').click(function() {
+      socket.emit('robot command', { command: 'forward' });
+    });
+    $('#reverse').click(function() {
+      socket.emit('robot command', { command: 'reverse' });
+    });
+    $('#turn-left').click(function() {
+      socket.emit('robot command', { command: 'turn-left' });
+    });
+    $('#turn-right').click(function() {
+      socket.emit('robot command', { command: 'turn-right' });
+    });
+    $('#stop').click(function() {
+      socket.emit('robot command', { command: 'stop' });
+    });
+
+    wIsDown = false,
+    aIsDown = false,
+    sIsDown = false,
+    dIsDown = false;
+
+    $(document).keydown(function(e){
+     switch(e.which){
+      case 87:
+        if(wIsDown) return;
+        wIsDown = true;
+        socket.emit('robot command', { command: 'forward' });
+        break;
+      case 65:
+        if(aIsDown) return;
+        aIsDown = true;
+        socket.emit('robot command', { command: 'turn-left' });
+       socket.emit('keydown', 'left');
+        break;
+      case 83:
+        if(sIsDown) return;
+        sIsDown = true;
+        socket.emit('robot command', { command: 'reverse' });
+        break;
+      case 68:
+        if(dIsDown) return;
+        dIsDown = true;
+        socket.emit('robot command', { command: 'turn-right' });
+        break;
+     }
+    });
+
+    $(document).keyup(function(e){
+    switch(e.which){
+      case 87:
+        if(!wIsDown) return;
+        wIsDown = false;
+        socket.emit('robot command', { command: 'stop' });
+        break;
+      case 65:
+        if(!aIsDown) return;
+        aIsDown = false;
+        socket.emit('robot command', { command: 'stop' });
+        break;
+      case 83:
+        if(!sIsDown) return;
+        sIsDown = false;
+        socket.emit('robot command', { command: 'stop' });
+        break;
+      case 68:
+        if(!dIsDown) return;
+        dIsDown = false;
+        socket.emit('robot command', { command: 'stop' });
+        break;
+    }
+   });
+
+  });
+</script>
