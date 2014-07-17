@@ -13,6 +13,8 @@ createAdHocNetwork() {
         sudo ifconfig wlan0 10.0.0.200 netmask 255.255.255.0 up
         sudo /usr/sbin/dhcpd wlan0
         echo "Ad-hoc network created"
+	sudo /usr/sbin/dnsmasq -i wlan0 --interface-name=tank.local,wlan0
+	echo "DNS services started"
 }
 
 createAccessPoint() {
@@ -24,6 +26,8 @@ createAccessPoint() {
 	sudo /usr/sbin/dhcpd wlan0
 	echo "Enabling HostAPD"
 	sudo /etc/init.d/hostapd start
+        sudo /usr/sbin/dnsmasq -i wlan0 --interface-name=tank.local,wlan0
+        echo "DNS services started"
 }
 
 test() {
