@@ -1,10 +1,3 @@
-<!--Add buttons a user can click-->
-<button type="button" id="forward">Forward</button>
-<button type="button" id="reverse">Reverse</button>
-<button type="button" id="turn-left">Turn Left</button>
-<button type="button" id="turn-right">Turn Right</button>
-<button type="button" id="stop">Stop</button>
-
 <script type="text/javascript">
 
 /* Copyright (C) 2007 Richard Atterer, richardÂ©atterer.net
@@ -46,10 +39,20 @@ function imageOnclick() { // Clicking on the image will pause the stream
 </script>
 <body onload="createImageLayer();">
 
-<div id="webcam"><noscript><img src="http://tank.local:8080/?action=snapshot" /></noscript></div>
+<div id="webcam" style="height: 500px;"><noscript><img src="http://tank.local:8080/?action=snapshot" /></noscript></div>
 
+
+<div id="buttons">
+<!--Add buttons a user can click-->
+<button type="button" id="forward">Forward</button>
+<button type="button" id="reverse">Reverse</button>
+<button type="button" id="turn-left">Turn Left</button>
+<button type="button" id="turn-right">Turn Right</button>
+<button type="button" id="stop">Stop</button>
+</div>
 
 </body>
+
 
 <!--Using JQuery for button events-->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
