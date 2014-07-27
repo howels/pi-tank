@@ -16,6 +16,7 @@ var async = require('async'),
     _leftMotorBack   = 11,
     _rightMotorFront = 12,
     _rightMotorBack  = 13,
+    _turnTime = 100,
     _speed = 1; //only possible when using arduino when we can use analogWrite instead of digitalWrite
 
 //this is to use the Pi's GPIO pins:
@@ -101,6 +102,11 @@ tank.turnLeft = function(){
  );
 };
 
+tank.turnLeftShort = function(){
+ tank.turnLeft();
+ setTimeout(tank.stopAllMotors, _turnTime);
+};
+
 tank.turnRight = function(){
  console.log("Turn right function");
  async.parallel([function(callback) { board.digitalWrite(_leftMotorFront, _speed) },                                    
@@ -111,6 +117,11 @@ tank.turnRight = function(){
      res.end();
    }
  );
+};
+
+tank.turnRightShort = function(){
+ tank.turnRight();
+ setTimeout(tank.stopAllMotors, _turnTime);
 };
 
 tank.stopAllMotors = function(){
@@ -142,10 +153,10 @@ io.sockets.on('connection', function(socket) {
       tank.moveBackward();
     }
     if (command == 'turn-left') {
-      tank.turnLeft();
+      tank.turnLeftShort();
     }
     if (command == 'turn-right') {
-      tank.turnRight();
+      tank.turnRightShort();
     }
     if (command == 'stop') {
       tank.stopAllMotors();
