@@ -14,10 +14,17 @@ var async = require('async'),
     five = require("johnny-five"),
     raspi = require('raspi-io'),
     tank = {},
+//  GPIO pins are 7, 11, 12, 13, 15, 16, 18 22
+    _leftMotorFront  = 11,
+    _leftMotorBack   = 12,
+    _rightMotorFront = 13,
+    _rightMotorBack  = 15,
+/*
     _leftMotorFront  = 7,
     _leftMotorBack   = 11,
     _rightMotorFront = 12,
     _rightMotorBack  = 13,
+*/
     _turnTime = 100,
     _speed = 1; //only possible when using arduino when we can use analogWrite instead of digitalWrite
 
@@ -29,10 +36,10 @@ var board = new raspi();
 
 board.on("ready", function() {
 
-this.pinMode(7, board.MODES.OUTPUT);
-this.pinMode(11, board.MODES.OUTPUT);
-this.pinMode(12, board.MODES.OUTPUT);
-this.pinMode(13, board.MODES.OUTPUT);
+this.pinMode(_leftMotorFront, board.MODES.OUTPUT);
+this.pinMode(_leftMotorBack, board.MODES.OUTPUT);
+this.pinMode(_rightMotorFront, board.MODES.OUTPUT);
+this.pinMode(_rightMotorBack, board.MODES.OUTPUT);
 
  async.parallel([function(callback) { board.digitalWrite(_leftMotorFront, 0) },
    function(callback) { board.digitalWrite(_leftMotorBack, 0) },
@@ -47,7 +54,8 @@ this.pinMode(13, board.MODES.OUTPUT);
 
 
 // Access server through port 80
-server.listen(3000);
+//server.listen(3000);
+server.listen(80);
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());       // to support JSON-encoded bodies
